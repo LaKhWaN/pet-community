@@ -47,7 +47,13 @@ const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/auth");
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Serve static files from uploads directory
 app.use("/uploads", express.static("uploads"));
