@@ -3,8 +3,44 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+const multer = require("multer");
 
 dotenv.config();
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Not an image! Please upload an image."), false);
+    }
+  },
+});
+
+// Create uploads directory if it doesn't exist
+const fs = require("fs");
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 
 // Import routes
 const indexRoutes = require("./routes/index");
@@ -13,9 +49,12 @@ const authRoutes = require("./routes/auth");
 app.use(express.json());
 app.use(cors());
 
-// Use routes
-app.use("/", indexRoutes);
-app.use("/auth", authRoutes);
+// Serve static files from uploads directory
+app.use("/uploads", express.static("uploads"));
+
+// Use routes with /api prefix
+app.use("/api", indexRoutes);
+app.use("/api/auth", authRoutes);
 
 // Connect to MongoDB Atlas
 mongoose
