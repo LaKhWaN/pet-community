@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Nav, Navbar, Button, Image } from "react-bootstrap";
+import { Container, Nav, Navbar, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -12,12 +12,6 @@ export default function AppNavbar() {
     logout();
     toast.success("Logged out successfully!");
     navigate("/");
-  };
-
-  const getProfilePhotoUrl = (photoUrl) => {
-    if (!photoUrl) return null;
-    if (photoUrl.startsWith('http')) return photoUrl;
-    return `${import.meta.env.VITE_BACKEND_URL}${photoUrl}`;
   };
 
   return (
@@ -44,16 +38,6 @@ export default function AppNavbar() {
             {user ? (
               <>
                 <Nav.Link as={Link} to="/profile">
-                  {user.profilePhoto && (
-                    <Image
-                      src={getProfilePhotoUrl(user.profilePhoto)}
-                      alt="Profile"
-                      roundedCircle
-                      width="32"
-                      height="32"
-                      className="me-2"
-                    />
-                  )}
                   {user.name}
                 </Nav.Link>
                 <Button

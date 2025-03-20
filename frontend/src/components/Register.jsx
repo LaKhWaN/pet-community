@@ -10,7 +10,6 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [location, setLocation] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState(null);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -20,17 +19,13 @@ export default function Register() {
     try {
       setLoading(true);
 
-      // Create FormData object to send file
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("location", location);
-      if (profilePhoto) {
-        formData.append("profilePhoto", profilePhoto);
-      }
+      const result = await register({
+        name,
+        email,
+        password,
+        location,
+      });
 
-      const result = await register(formData);
       if (result.success) {
         toast.success("Registration successful!");
         navigate("/");
@@ -41,13 +36,6 @@ export default function Register() {
       toast.error("Failed to create an account");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfilePhoto(file);
     }
   };
 
@@ -91,14 +79,6 @@ export default function Register() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Profile Photo (Optional)</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
               />
             </Form.Group>
             <Button className="w-100" type="submit" disabled={loading}>
