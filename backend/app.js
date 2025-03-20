@@ -49,9 +49,17 @@ const authRoutes = require("./routes/auth");
 app.use(express.json());
 app.use(
   cors({
-    origin: "*",
+    origin: ["https://pet-community-lyart.vercel.app", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    credentials: true,
+    maxAge: 86400, // 24 hours
   })
 );
 
