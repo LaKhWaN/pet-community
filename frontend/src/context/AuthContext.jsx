@@ -8,12 +8,23 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on mount
     const token = localStorage.getItem("token");
-    if (token) {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      setUser(userData);
+    const storedUser = localStorage.getItem("user");
+
+    if (token && storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        setUser(null);
+      }
+    } else {
+      setUser(null);
     }
+
     setLoading(false);
   }, []);
 
@@ -24,8 +35,9 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      const { token, user } = response.data;
+      const { token, refreshToken, user } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
       return { success: true };
@@ -41,8 +53,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post("/auth/register", userData);
 
-      const { token, user } = response.data;
+      const { token, refreshToken, user } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
       return { success: true };
@@ -61,9 +74,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, setUser, login, register, logout, loading }}
-    >
+    <AuthContext.Provider value={{ user, setUser, login, register, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

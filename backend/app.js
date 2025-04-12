@@ -45,11 +45,13 @@ dotenv.config();
 // Import routes
 const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/auth");
+const serviceRoutes = require("./routes/services"); // Import service routes
+const forumRoutes = require('./routes/forumRoutes'); // Import forum routes
 
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://pet-community-lyart.vercel.app", "http://localhost:5173"],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
@@ -69,6 +71,8 @@ app.use(
 // Use routes with /api prefix
 app.use("/api", indexRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/services", serviceRoutes); // Use service routes
+app.use('/api/forums', forumRoutes); // Use forum routes
 
 // Connect to MongoDB Atlas
 mongoose

@@ -4,6 +4,7 @@ const {
   register,
   login,
   updateProfile,
+  refreshToken,
 } = require("../controllers/authController");
 const multer = require("multer");
 const path = require("path");
@@ -42,6 +43,9 @@ router.post("/register", upload.single("profilePhoto"), register);
 
 // Login route
 router.post("/login", login);
+
+// Refresh token route
+router.post("/refresh", refreshToken);
 
 // Update profile route (protected)
 router.put("/profile", auth, upload.single("profilePhoto"), updateProfile);

@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 // Register new user
 exports.register = async (req, res) => {
@@ -42,8 +43,14 @@ exports.register = async (req, res) => {
       expiresIn: "24h",
     });
 
+    // Create refresh token
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+    user.refreshToken = refreshToken;
+    await user.save();
+
     res.status(201).json({
       token,
+      refreshToken,
       user: {
         id: user._id,
         name: user.name,
@@ -81,8 +88,14 @@ exports.login = async (req, res) => {
       expiresIn: "24h",
     });
 
+    // Create refresh token
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+    user.refreshToken = refreshToken;
+    await user.save();
+
     res.json({
       token,
+      refreshToken,
       user: {
         id: user._id,
         name: user.name,
@@ -92,6 +105,33 @@ exports.login = async (req, res) => {
         profilePhoto: user.profilePhoto,
       },
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Refresh token
+exports.refreshToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(400).json({ message: "Refresh token is required" });
+  }
+
+  try {
+    const user = await User.findOne({ refreshToken });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    // Create new JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
+
+    res.json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

@@ -18,7 +18,7 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ message: "Token is not valid" });
     }
 
-    req.user = { userId: user._id };
+    req.user = user; // Attach the full user object (excluding password)
     next();
   } catch (error) {
     res.status(401).json({ message: "Token is not valid" });
