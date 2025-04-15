@@ -17,6 +17,7 @@ import Profile from "./components/Profile";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ForumDetail from "./pages/Forum/ForumDetail";
 import PostDetail from "./pages/Forum/PostDetail"; // Import PostDetail
+import NotFound from "./components/NotFound"; // Import NotFound component
 
 function App() {
   const [services, setServices] = useState([]);
@@ -103,6 +104,7 @@ function App() {
         </Route>
         <Route path="/forum/:id" element={<ForumDetail />} />
         <Route path="/forum/:forumId/:id" element={<PostDetail />} />
+        <Route path="*" element={<NotFound />} /> {/* Catch-all route */}
       </Routes>
       <Footer />
       <ToastContainer position="top-right" autoClose={3000} />

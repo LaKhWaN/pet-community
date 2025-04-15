@@ -32,6 +32,7 @@
     - Sends PUT request on save, handles response/toasts, triggers `onUpdateSuccess` callback.
     - Sends DELETE request on confirmation, handles response/toasts, triggers `onDeleteSuccess` callback.
   - **Routing:** Links from service cards to detail page work.
+  - **404 Page:** A 404 page has been implemented using a new `NotFound.jsx` component and a catch-all route in `App.jsx`.
 
 ## 2. What's Left to Build / Implement
 

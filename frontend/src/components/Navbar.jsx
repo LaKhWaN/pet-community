@@ -77,9 +77,9 @@ export default function AppNavbar({
                 </>
               )}
             </NavDropdown>
-            <Nav.Link as={Link} to="/community">
+            {/* <Nav.Link as={Link} to="/community">
               Community
-            </Nav.Link>
+            </Nav.Link> */}
             <Nav.Link as={Link} to="/forum">
               Forums
             </Nav.Link>
