@@ -51,7 +51,7 @@ const forumRoutes = require('./routes/forumRoutes'); // Import forum routes
 app.use(express.json());
 app.use(
   cors({
-    origin: "*",
+    origin: ["https://pet-community-lyart.vercel.app","http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
